@@ -1,0 +1,160 @@
+import java.util.Scanner;
+
+class Student {
+    int rollNo;
+    String name;
+    float marks;
+    Student next;
+
+    public Student(int rollNo, String name, float marks) {
+        this.rollNo = rollNo;
+        this.name = name;
+        this.marks = marks;
+        this.next = null;
+    }
+}
+
+class StudentList {
+    Student head = null;
+
+    // Add student record
+    void addStudent(int rollNo, String name, float marks) {
+        Student newStudent = new Student(rollNo, name, marks);
+        if (head == null)
+            head = newStudent;
+        else {
+            Student temp = head;
+            while (temp.next != null)
+                temp = temp.next;
+            temp.next = newStudent;
+        }
+    }
+
+    // Delete student by roll number
+    void deleteStudent(int rollNo) {
+        if (head == null) return;
+
+        if (head.rollNo == rollNo) {
+            head = head.next;
+            return;
+        }
+
+        Student temp = head;
+        while (temp.next != null && temp.next.rollNo != rollNo)
+            temp = temp.next;
+
+        if (temp.next != null)
+            temp.next = temp.next.next;
+        else
+            System.out.println("Student not found!");
+    }
+
+    // Update student details
+    void updateStudent(int rollNo, String newName, float newMarks) {
+        Student temp = head;
+        while (temp != null) {
+            if (temp.rollNo == rollNo) {
+                temp.name = newName;
+                temp.marks = newMarks;
+                return;
+            }
+            temp = temp.next;
+        }
+        System.out.println("Student not found!");
+    }
+
+    // Search student by roll number
+    void searchStudent(int rollNo) {
+        Student temp = head;
+        while (temp != null) {
+            if (temp.rollNo == rollNo) {
+                System.out.println("Found: " + temp.rollNo + " " + temp.name + " " + temp.marks);
+                return;
+            }
+            temp = temp.next;
+        }
+        System.out.println("Student not found!");
+    }
+
+    // Sort by marks or roll number
+    void sort(String type) {
+        if (head == null) return;
+        for (Student i = head; i != null; i = i.next) {
+            for (Student j = i.next; j != null; j = j.next) {
+                boolean condition = type.equalsIgnoreCase("marks") ? i.marks > j.marks : i.rollNo > j.rollNo;
+                if (condition) {
+                    // Swap data
+                    int tempRoll = i.rollNo;
+                    String tempName = i.name;
+                    float tempMarks = i.marks;
+
+                    i.rollNo = j.rollNo;
+                    i.name = j.name;
+                    i.marks = j.marks;
+
+                    j.rollNo = tempRoll;
+                    j.name = tempName;
+                    j.marks = tempMarks;
+                }
+            }
+        }
+    }
+
+    // Display all students
+    void display() {
+        if (head == null) {
+            System.out.println("No records found!");
+            return;
+        }
+        Student temp = head;
+        while (temp != null) {
+            System.out.println(temp.rollNo + " " + temp.name + " " + temp.marks);
+            temp = temp.next;
+        }
+    }
+}
+
+public class StudentRecordSystem {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        StudentList list = new StudentList();
+
+        while (true) {
+            System.out.println("\n1.Add  2.Delete  3.Update  4.Search  5.Sort  6.Display  7.Exit");
+            System.out.print("Enter choice: ");
+            int ch = sc.nextInt();
+
+            switch (ch) {
+                case 1:
+                    System.out.print("Enter Roll No, Name, Marks: ");
+                    list.addStudent(sc.nextInt(), sc.next(), sc.nextFloat());
+                    break;
+                case 2:
+                    System.out.print("Enter Roll No to delete: ");
+                    list.deleteStudent(sc.nextInt());
+                    break;
+                case 3:
+                    System.out.print("Enter Roll No, New Name, New Marks: ");
+                    list.updateStudent(sc.nextInt(), sc.next(), sc.nextFloat());
+                    break;
+                case 4:
+                    System.out.print("Enter Roll No to search: ");
+                    list.searchStudent(sc.nextInt());
+                    break;
+                case 5:
+                    System.out.print("Sort by (marks/roll): ");
+                    list.sort(sc.next());
+                    break;
+                case 6:
+                    list.display();
+                    break;
+                case 7:
+                    System.out.println("Exiting...");
+                    sc.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+}
