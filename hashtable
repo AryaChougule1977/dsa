@@ -1,0 +1,95 @@
+import java.util.LinkedList;
+
+class HashTable {
+    private final int SIZE = 10; // fixed size of hash table
+    private LinkedList<Pair>[] table;
+
+    // Constructor to create array of linked lists
+    public HashTable() {
+        table = new LinkedList[SIZE];
+        for (int i = 0; i < SIZE; i++) {
+            table[i] = new LinkedList<>();
+        }
+    }
+
+    // Simple pair class for key-value
+    static class Pair {
+        int key;
+        String value;
+
+        Pair(int key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    // Hash function (division method)
+    private int hashFunction(int key) {
+        return key % SIZE;
+    }
+
+    // Insert key-value pair
+    public void insert(int key, String value) {
+        int index = hashFunction(key);
+        for (Pair p : table[index]) {
+            if (p.key == key) {
+                p.value = value; // Update if key already exists
+                return;
+            }
+        }
+        table[index].add(new Pair(key, value));
+        System.out.println("Inserted (" + key + ", " + value + ") at index " + index);
+    }
+
+    // Search for a key
+    public void search(int key) {
+        int index = hashFunction(key);
+        for (Pair p : table[index]) {
+            if (p.key == key) {
+                System.out.println("Found: Key = " + key + ", Value = " + p.value);
+                return;
+            }
+        }
+        System.out.println("Key " + key + " not found!");
+    }
+
+    // Delete a key
+    public void delete(int key) {
+        int index = hashFunction(key);
+        for (Pair p : table[index]) {
+            if (p.key == key) {
+                table[index].remove(p);
+                System.out.println("Deleted key " + key + " from index " + index);
+                return;
+            }
+        }
+        System.out.println("Key " + key + " not found!");
+    }
+
+    // Display entire hash table
+    public void display() {
+        for (int i = 0; i < SIZE; i++) {
+            System.out.print(i + ": ");
+            for (Pair p : table[i]) {
+                System.out.print(" -> (" + p.key + ", " + p.value + ")");
+            }
+            System.out.println();
+        }
+    }
+}
+
+public class HashTableExample {
+    public static void main(String[] args) {
+        HashTable ht = new HashTable();
+
+        ht.insert(10, "A");
+        ht.insert(21, "B");
+        ht.insert(32, "C");
+        ht.insert(15, "D");
+        ht.display();
+
+        ht.search(21);
+        ht.delete(32);
+        ht.display();
+    }
+}
